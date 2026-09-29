@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>私人聚会 · 后端</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 30px 18px 64px;
+      background: #100e1c; color: #f3f0ff;
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      line-height: 1.7; font-size: 15px;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 23px; margin: 0 0 10px; }
+    h2 { font-size: 15px; margin: 30px 0 10px; color: #a78bfa; font-weight: 600; }
+    .sub { color: #aaa2cc; font-size: 14px; margin: 0 0 22px; }
+    code {
+      background: rgba(255,255,255,.08); padding: 1px 6px;
+      border-radius: 4px; font-size: 13px;
+    }
+    .card {
+      background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 12px; padding: 4px 16px;
+    }
+    .row {
+      display: flex; justify-content: space-between; gap: 16px; align-items: baseline;
+      padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 14px;
+    }
+    .row:last-child { border-bottom: 0; }
+    .row > span:first-child { color: #aaa2cc; flex: none; }
+    .row > b { text-align: right; font-weight: 600; word-break: break-all; }
+    .ok { color: #35d6a4; }
+    .warn { color: #ffc861; }
+    ul.routes { list-style: none; padding: 0; margin: 0; }
+    ul.routes li {
+      display: flex; gap: 12px; padding: 7px 0; font-size: 13px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    ul.routes li:last-child { border-bottom: 0; }
+    ul.routes .m { color: #a78bfa; flex: none; min-width: 96px; font-variant-numeric: tabular-nums; }
+    ul.routes .p { word-break: break-all; }
+    ol { padding-left: 22px; margin: 0; font-size: 14px; color: #aaa2cc; }
+    ol li { margin-bottom: 8px; }
+    ol b, ol code { color: #f3f0ff; }
+    .tip {
+      margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-size: 13.5px;
+      background: rgba(255, 200, 97, .1); border: 1px solid rgba(255, 200, 97, .28);
+      color: #e8dcbd;
+    }
+    .tip code { background: rgba(255,255,255,.1); color: #fff; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎉 私人聚会 · 后端服务在跑</h1>
+  <p class="sub">
+    后端只提供 <code>/api/...</code> 接口，没有网页界面 ——
+    所以根路径能看到这一页，就说明服务是正常的（之前这里是 404，容易让人以为挂了）。
+  </p>
+
+  <div class="card">
+    <div class="row"><span>当前时间</span><b>{{ now }}</b></div>
+    <div class="row"><span>调试模式</span><b>{{ debug_text }}</b></div>
+    <div class="row">
+      <span>微信 AppSecret</span>
+      <b class="{% if secret_ok %}ok{% else %}warn{% endif %}">{{ secret_text }}</b>
+    </div>
+    <div class="row">
+      <span>数据库迁移</span>
+      {% if pending_count %}
+        <b class="warn">有 {{ pending_count }} 个没跑 —— 在 AsrielPartyBackend 目录下执行
+          <code>manage.py migrate</code></b>
+      {% else %}
+        <b class="ok">已是最新</b>
+      {% endif %}
+    </div>
+    <div class="row"><span>接口</span><b>{{ routes|length }} 个</b></div>
+  </div>
+
+  {% if pending_count %}
+    <div class="tip">
+      没跑的迁移：{% for name in pending_names %}<code>{{ name }}</code> {% endfor %}<br>
+      代码里加了字段但库没跟上时，接口会直接报 500（比如登录）。
+    </div>
+  {% endif %}
+
+  <h2>接口一览</h2>
+  <ul class="routes">
+    {% for route in routes %}
+      <li><span class="m">{{ route.methods }}</span><span class="p">{{ route.path }}</span></li>
+    {% endfor %}
+  </ul>
+
+  <h2>小程序怎么连过来</h2>
+  <ol>
+    <li>打开 <code>AsrielParty/config/index.js</code>，把 <b>env</b> 改成 <b>'dev'</b>；</li>
+    <li>把 <b>ENV.dev.baseUrl</b> 改成这台机器的地址，例如
+        <code>http://你电脑的局域网IP:8000</code>；</li>
+    <li>微信开发者工具 → 详情 → 本地设置 → 勾上
+        <b>「不校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书」</b>。</li>
+  </ol>
+  <div class="tip">
+    手机真机预览时要用<b>局域网 IP</b>（不能写 <code>127.0.0.1</code>），
+    而且手机和电脑得在同一个 Wi-Fi 下。Windows 上执行 <code>ipconfig</code>，
+    找 <code>IPv4 地址</code> 那一行（通常是 <code>192.168.x.x</code>）。
+    另外如果用手机连，启动服务时要写 <code>runserver 0.0.0.0:8000</code>。
+  </div>
+</div>
+</body>
+</html>

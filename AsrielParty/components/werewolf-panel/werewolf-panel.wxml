@@ -1,0 +1,155 @@
+<!--components/werewolf-panel/werewolf-panel.wxml-->
+<!--
+  狼人杀牌桌：左右两列座位夹着中间的进程记录，底部是当前要做的操作。
+  状态全部来自 room.gameState（后端已按当前用户过滤过），这里只做展示和收集操作。
+  点座位的含义见 werewolf-panel.js 的 onTapSeat。
+-->
+
+<!-- 一个座位（左右两列共用） -->
+<template name="wwpSeat">
+  <view
+    class="wwp-seat {{item.alive ? '' : 'is-out'}} {{item.isMe ? 'is-me' : ''}} {{item.canPick ? 'is-pickable' : ''}} {{item.picked ? 'is-picked' : ''}}"
+    bindtap="onTapSeat"
+    bindlongpress="onLongPressSeat"
+    data-id="{{item.userId}}"
+    hover-class="wwp-seat-hover"
+  >
+    <view class="wwp-seat-face">
+      <text class="wwp-seat-no">{{item.seatNo}}</text>
+      <text wx:if="{{item.picked}}" class="wwp-seat-picked">✓</text>
+      <text wx:elif="{{!item.alive}}" class="wwp-seat-out">✕</text>
+    </view>
+
+    <text class="wwp-seat-name">{{item.nickname}}</text>
+
+    <text wx:if="{{item.markName}}" class="wwp-seat-mark mark-{{item.markCamp}}">{{item.markName}}</text>
+    <text wx:elif="{{item.isMe}}" class="wwp-seat-mark mark-me">我</text>
+    <text wx:elif="{{item.isBot}}" class="wwp-seat-mark mark-bot">人机</text>
+
+    <text wx:if="{{item.roleName}}" class="wwp-seat-role role-{{item.camp}}">{{item.roleName}}</text>
+  </view>
+</template>
+
+<view class="wwp" wx:if="{{view}}">
+  <!-- 顶栏：第几天 / 阶段 / 倒计时（倒计时只是提示，到点不会自动推进） -->
+  <view class="wwp-top">
+    <text class="wwp-top-day">{{view.dayText}}</text>
+    <text class="wwp-top-phase">{{view.phaseText}}</text>
+    <text wx:if="{{timerText}}" class="wwp-top-timer">{{timerText}}</text>
+  </view>
+
+  <!-- 牌桌：左右两列座位夹着中间那栏 -->
+  <view class="wwp-table">
+    <view class="wwp-col">
+      <block wx:for="{{view.leftSeats}}" wx:key="userId" wx:for-item="item">
+        <template is="wwpSeat" data="{{item: item}}" />
+      </block>
+    </view>
+
+    <!-- 中间：进程记录（后端下发的公开事件，谁出局、谁投给了谁） -->
+    <view class="wwp-center">
+      <scroll-view
+        class="wwp-log"
+        scroll-y
+        scroll-into-view="{{view.logAnchor}}"
+        scroll-with-animation
+        enhanced
+        show-scrollbar="{{false}}"
+      >
+        <view
+          wx:for="{{view.log}}"
+          wx:key="id"
+          id="{{item.id}}"
+          class="wwp-log-item tone-{{item.tone}}"
+        >
+          <text class="wwp-log-text">{{item.text}}</text>
+
+          <!-- 票型：按「投给谁」分组 -->
+          <view wx:if="{{item.ticketLines.length}}" class="wwp-log-ballots">
+            <view wx:for="{{item.ticketLines}}" wx:key="id" wx:for-item="g" class="wwp-log-ballot">
+              <text class="wwp-log-ballot-to {{g.abstain ? 'is-abstain' : ''}}">{{g.abstain ? '弃票的' : '投给 ' + g.seatNo + ' 号的'}}：</text>
+              <text class="wwp-log-ballot-from">{{g.voterText}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{!view.log.length}}" class="wwp-log-empty">
+          <text class="wwp-log-empty-title">还没有动静</text>
+          <text class="wwp-log-empty-hint">天亮了、投票了，都会记在这里</text>
+        </view>
+      </scroll-view>
+
+      <!-- 我的记录：查验 / 验尸 / 摄梦读心，只有自己看得到 -->
+      <view wx:if="{{view.checks.length}}" class="wwp-checks">
+        <text class="wwp-checks-title">我的记录</text>
+        <view wx:for="{{view.checks}}" wx:key="id" wx:for-item="c" class="wwp-check-row">
+          <text class="wwp-check-name ellipsis">{{c.seatNo}} 号 {{c.nickname}}</text>
+          <text class="wwp-check-result {{c.tone}}">{{c.text}}</text>
+        </view>
+      </view>
+
+      <!-- 结算 / 结束横幅 -->
+      <view wx:if="{{view.banner}}" class="wwp-banner {{view.banner.tone}}">
+        <text class="wwp-banner-title">{{view.banner.title}}</text>
+        <text wx:if="{{view.banner.sub}}" class="wwp-banner-sub">{{view.banner.sub}}</text>
+      </view>
+    </view>
+
+    <view class="wwp-col">
+      <block wx:for="{{view.rightSeats}}" wx:key="userId" wx:for-item="item">
+        <template is="wwpSeat" data="{{item: item}}" />
+      </block>
+    </view>
+  </view>
+
+  <!-- 底部：现在该干什么 -->
+  <view class="wwp-stage">
+    <view class="wwp-stage-head">
+      <text class="wwp-stage-title">{{view.stage.title}}</text>
+      <text wx:if="{{view.stage.note}}" class="wwp-stage-note">{{view.stage.note}}</text>
+    </view>
+    <text wx:if="{{view.stage.hint}}" class="wwp-stage-hint">{{view.stage.hint}}</text>
+
+    <!-- 只有这一步的行动者才看得到的信息（女巫看到被袭击的人、狼人看到同伴的选择…） -->
+    <view wx:if="{{view.stage.lines.length}}" class="wwp-lines">
+      <text wx:for="{{view.stage.lines}}" wx:key="text" class="wwp-line">{{item.text}}</text>
+    </view>
+
+    <view wx:if="{{view.stage.buttons.length}}" class="wwp-btns">
+      <view
+        wx:for="{{view.stage.buttons}}"
+        wx:key="key"
+        class="wwp-btn {{item.tone}} {{item.disabled ? 'is-disabled' : ''}}"
+        bindtap="onStageButton"
+        data-key="{{item.key}}"
+        hover-class="{{item.disabled ? '' : 'wwp-btn-hover'}}"
+      >{{item.text}}</view>
+    </view>
+  </view>
+
+  <!-- 身份卡：开局自动摆一次，之后点自己头像随时能看 -->
+  <view wx:if="{{view.showRoleCard}}" class="wwp-role" bindtap="onTapRoleMask">
+    <view class="wwp-role-card" catchtap="noop">
+      <text class="wwp-role-emoji">{{view.roleCard.emoji}}</text>
+      <text class="wwp-role-name">{{view.roleCard.roleName}}</text>
+      <text class="wwp-role-sub">{{view.roleCard.sub}}</text>
+
+      <view wx:if="{{view.roleCard.mates.length}}" class="wwp-role-mates">
+        <text class="wwp-role-mates-title">你的狼队友</text>
+        <view wx:for="{{view.roleCard.mates}}" wx:key="id" class="wwp-role-mate">
+          {{item.seatNo}} 号 {{item.nickname}}
+        </view>
+      </view>
+
+      <view wx:if="{{view.roleCard.chips.length}}" class="wwp-role-chips">
+        <text
+          wx:for="{{view.roleCard.chips}}"
+          wx:key="id"
+          class="wwp-role-chip {{item.used ? 'is-used' : ''}}"
+        >{{item.text}}</text>
+      </view>
+
+      <view class="wwp-role-ok" catchtap="onRoleOk">知道了</view>
+    </view>
+  </view>
+</view>

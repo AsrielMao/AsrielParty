@@ -1,0 +1,67 @@
+/**pages/rules/rules.wxss**/
+
+.intro {
+  margin-bottom: 28rpx;
+}
+
+.intro-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+
+.intro-text {
+  font-size: 24rpx;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin-bottom: 20rpx;
+}
+
+.game-emoji {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46rpx;
+  flex: none;
+}
+
+.game-name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.game-tagline {
+  margin-top: 4rpx;
+  font-size: 23rpx;
+  color: var(--text-2);
+}
+
+.game-tags {
+  margin-top: 12rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.game-right {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6rpx;
+}
+
+.chev {
+  font-size: 36rpx;
+  color: var(--text-3);
+  line-height: 1;
+}

@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/nav-bar",
+    "seat": "/components/seat/seat",
+    "undercover-panel": "/components/undercover-panel/undercover-panel",
+    "werewolf-panel": "/components/werewolf-panel/werewolf-panel",
+    "draw-panel": "/components/draw-panel/draw-panel"
+  },
+  "disableScroll": true
+}

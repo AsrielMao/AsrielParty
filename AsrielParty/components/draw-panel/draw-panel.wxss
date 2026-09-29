@@ -1,0 +1,416 @@
+/* components/draw-panel/draw-panel.wxss */
+
+.dp {
+  /* 注意：自定义组件的宿主节点不是 flex 容器，写 flex:1 是不生效的，
+     得用 height/width 100% 把它撑满（和 undercover-panel 保持一致） */
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+/* ============ 顶部：轮次 / 阶段 / 倒计时 ============ */
+.dp-top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.dp-round {
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.dp-phase {
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(124, 92, 255, 0.18);
+  color: var(--primary-2);
+}
+
+.dp-timer {
+  margin-left: auto;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* ============ 谁在画 / 猜对进度 ============ */
+.dp-status {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 24rpx;
+  color: var(--text-2);
+}
+
+.dp-who.is-me {
+  color: var(--primary-2);
+  font-weight: 600;
+}
+
+.dp-progress {
+  margin-left: auto;
+}
+
+/* ============ 画板 ============ */
+.dp-board-wrap {
+  position: relative;
+  flex: 1;
+  /* 兜底：屏幕再小也不让画板被挤没（不然整块都塌了） */
+  min-height: 420rpx;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1rpx solid var(--border-strong);
+  background: #1a1630;
+}
+
+/* canvas 用绝对定位撑满画板区 —— 百分比高度对 canvas 不一定可靠 */
+.dp-board {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 选词 / 结算 / 结束：盖在画板上的一层 */
+.dp-mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 32rpx;
+  background: rgba(10, 8, 20, 0.92);
+}
+
+.dp-mask-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  text-align: center;
+}
+
+.dp-mask-hint {
+  font-size: 23rpx;
+  color: var(--text-3);
+  text-align: center;
+}
+
+.dp-options {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.dp-option {
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: rgba(124, 92, 255, 0.18);
+  border: 1rpx solid rgba(124, 92, 255, 0.4);
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.dp-option-hover {
+  background: rgba(124, 92, 255, 0.32);
+}
+
+.dp-gains {
+  width: 100%;
+  margin-top: 8rpx;
+}
+
+.dp-gain-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  height: 56rpx;
+}
+
+.dp-gain-name {
+  flex: 1;
+  font-size: 26rpx;
+}
+
+.dp-gain-value {
+  flex: none;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--success);
+}
+
+.dp-btn {
+  margin-top: 12rpx;
+  min-width: 320rpx;
+  height: 84rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--primary) 0%, #9d7bff 100%);
+  color: #fff;
+}
+
+.dp-btn-hover {
+  opacity: 0.85;
+}
+
+.dp-over-list {
+  width: 100%;
+  max-height: 440rpx;
+}
+
+.dp-over-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  height: 64rpx;
+  padding: 0 16rpx;
+  border-radius: var(--radius-sm);
+}
+
+.dp-over-row.is-top {
+  background: rgba(255, 200, 97, 0.14);
+}
+
+.dp-over-seat {
+  flex: none;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-2);
+}
+
+.dp-over-name {
+  flex: 1;
+  font-size: 26rpx;
+}
+
+.dp-over-bot {
+  flex: none;
+  font-size: 19rpx;
+  padding: 1rpx 10rpx;
+  border-radius: 999rpx;
+  background: rgba(124, 92, 255, 0.18);
+  color: var(--primary-2);
+}
+
+.dp-over-score {
+  flex: none;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+/* ============ 题目提示 ============ */
+.dp-word {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-height: 60rpx;
+  padding: 0 20rpx;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1rpx solid var(--border);
+}
+
+.dp-word-label {
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+.dp-word-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* ============ 画笔（只有画手有） ============ */
+.dp-pens {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.dp-colors {
+  display: flex;
+  gap: 10rpx;
+}
+
+.dp-color {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 3rpx solid transparent;
+}
+
+.dp-color.is-active {
+  border-color: #fff;
+}
+
+.dp-widths {
+  display: flex;
+  gap: 10rpx;
+  margin-left: 8rpx;
+}
+
+.dp-width {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2rpx solid transparent;
+}
+
+.dp-width.is-active {
+  border-color: var(--primary-2);
+}
+
+.dp-width-dot {
+  border-radius: 50%;
+  background: var(--text);
+}
+
+.dp-clear {
+  margin-left: auto;
+  padding: 12rpx 26rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  background: rgba(255, 95, 109, 0.14);
+  border: 1rpx solid rgba(255, 95, 109, 0.34);
+  color: #ff9aa2;
+}
+
+.dp-clear-hover {
+  opacity: 0.8;
+}
+
+/* ============ 猜词 ============ */
+.dp-input-row {
+  flex: none;
+  display: flex;
+  gap: 12rpx;
+}
+
+.dp-input {
+  flex: 1;
+  min-width: 0;
+  height: 84rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid var(--border);
+  font-size: 28rpx;
+  color: var(--text);
+}
+
+.dp-input-ph {
+  color: var(--text-3);
+}
+
+.dp-send {
+  flex: none;
+  width: 140rpx;
+  height: 84rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--primary) 0%, #9d7bff 100%);
+  color: #fff;
+}
+
+.dp-send-hover {
+  opacity: 0.85;
+}
+
+.dp-tip {
+  flex: none;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1rpx solid var(--border);
+  font-size: 24rpx;
+  color: var(--text-2);
+}
+
+.dp-tip.is-good {
+  color: var(--success);
+  border-color: rgba(53, 214, 164, 0.3);
+}
+
+/* ============ 猜测流水 ============ */
+.dp-guesses {
+  flex: none;
+  height: 140rpx;
+  padding: 10rpx 20rpx;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1rpx solid var(--border);
+}
+
+.dp-guesses.is-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23rpx;
+  color: var(--text-3);
+}
+
+.dp-guess-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  height: 52rpx;
+  font-size: 25rpx;
+}
+
+.dp-guess-name {
+  flex: none;
+  max-width: 180rpx;
+  font-size: 23rpx;
+  color: var(--text-3);
+}
+
+.dp-guess-text {
+  flex: 1;
+}
+
+.dp-guess-row.is-correct .dp-guess-text {
+  color: var(--success);
+  font-weight: 600;
+}

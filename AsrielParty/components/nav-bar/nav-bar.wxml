@@ -1,0 +1,26 @@
+<!-- 固定定位时输出的等高占位块 -->
+<view class="nav-placeholder" style="height: {{placeholderHeight}}px;"></view>
+
+<view
+  class="nav-root {{fixed ? 'nav-fixed' : ''}} {{transparent ? 'nav-transparent' : ''}} {{extClass}}"
+  style="height: {{statusBarHeight + navBarHeight}}px; padding-top: {{statusBarHeight}}px;"
+>
+  <view class="nav-inner" style="height: {{navBarHeight}}px;">
+    <view class="nav-left">
+      <view
+        wx:if="{{back}}"
+        class="nav-back"
+        hover-class="nav-back-hover"
+        hover-stay-time="80"
+        bindtap="onBack"
+      >
+        <view class="nav-arrow"></view>
+      </view>
+      <slot name="left"></slot>
+    </view>
+
+    <view class="nav-center">
+      <text class="nav-title">{{title}}</text>
+    </view>
+  </view>
+</view>

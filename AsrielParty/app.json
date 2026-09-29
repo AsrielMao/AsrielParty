@@ -1,0 +1,23 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/profile/profile",
+    "pages/create/create",
+    "pages/join/join",
+    "pages/room/room",
+    "pages/rules/rules",
+    "pages/rule-detail/rule-detail"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#100e1c",
+    "navigationBarBackgroundColor": "#100e1c",
+    "navigationBarTitleText": "私人聚会",
+    "navigationBarTextStyle": "white",
+    "navigationStyle": "custom"
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

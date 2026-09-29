@@ -1,0 +1,69 @@
+<!--pages/join/join.wxml-->
+<view class="page">
+  <nav-bar title="加入房间"></nav-bar>
+
+  <view class="body">
+    <!-- 房间号 -->
+    <view class="section">
+      <view class="label">房间号</view>
+      <view class="code-field">
+        <input
+          class="code-input"
+          type="text"
+          maxlength="{{codeLength}}"
+          value="{{code}}"
+          placeholder="输入 {{codeLength}} 位房间号"
+          placeholder-class="code-placeholder"
+          bindinput="onCodeInput"
+        />
+      </view>
+      <view class="t-hint mt-s">找房主要一下房间号，是字母和数字的组合</view>
+    </view>
+
+    <view class="btn btn-primary {{joining ? 'btn-disabled' : ''}}" bindtap="onJoin">
+      加入房间
+    </view>
+
+    <!-- 我参与的房间 -->
+    <view class="section mt-l">
+      <view class="between section-head">
+        <text class="t-section">我参与的房间</text>
+        <text class="t-hint" bindtap="loadRooms">刷新</text>
+      </view>
+
+      <view wx:if="{{loadingRooms}}" class="empty">
+        <text class="t-hint">加载中…</text>
+      </view>
+
+      <view wx:elif="{{!rooms.length}}" class="empty">
+        <text class="empty-emoji">🔍</text>
+        <text class="t-hint">还没有参与任何房间</text>
+      </view>
+
+      <block wx:else>
+        <view
+          wx:for="{{rooms}}"
+          wx:key="id"
+          class="room-item card card-tap"
+          bindtap="enterRoom"
+          data-id="{{item.id}}"
+        >
+          <view class="room-emoji" style="background: {{item.gameColor}}22;">{{item.gameEmoji}}</view>
+          <view class="flex-1">
+            <view class="room-title ellipsis">{{item.title}}</view>
+            <view class="room-meta">
+              <text class="t-hint">房间号 {{item.code}}</text>
+              <text class="dot">·</text>
+              <text class="t-hint">{{item.memberText}} 人</text>
+            </view>
+          </view>
+          <text class="tag {{item.statusText === '游戏中' ? 'tag-gold' : 'tag-primary'}}">
+            {{item.statusText}}
+          </text>
+        </view>
+      </block>
+    </view>
+
+    <view class="safe-bottom"></view>
+  </view>
+</view>

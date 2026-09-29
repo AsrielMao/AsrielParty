@@ -1,0 +1,123 @@
+<!--pages/rule-detail/rule-detail.wxml-->
+<view class="page">
+  <nav-bar title="{{game ? game.name : '游戏规则'}}"></nav-bar>
+
+  <view class="body">
+    <view wx:if="{{loading}}" class="empty">
+      <text class="t-hint">加载中…</text>
+    </view>
+
+    <block wx:elif="{{game}}">
+      <!-- 头部 -->
+      <view class="hero">
+        <view class="hero-emoji" style="background: {{game.color}}26;">{{game.emoji}}</view>
+        <view class="hero-name">{{game.name}}</view>
+        <view class="hero-tagline">{{game.tagline}}</view>
+        <view class="hero-meta">
+          <text class="tag tag-primary">{{game.peopleText}}</text>
+          <text class="tag">{{game.duration}}</text>
+        </view>
+      </view>
+
+      <view class="card intro-card">
+        <text class="intro-text">{{game.intro}}</text>
+      </view>
+
+      <!-- 版型（狼人杀这类「要先选版型」的游戏） -->
+      <view wx:if="{{game.variants.length}}" class="section">
+        <view class="section-title">版型</view>
+
+        <view wx:for="{{game.variants}}" wx:key="id" class="variant-card">
+          <view class="variant-head">
+            <text class="variant-name">{{item.name}}</text>
+            <text class="tag tag-primary">{{item.seats}} 人</text>
+          </view>
+
+          <view wx:if="{{item.intro}}" class="variant-intro">{{item.intro}}</view>
+
+          <!-- 这个版型配了哪些角色 -->
+          <view wx:if="{{item.roles.length}}" class="variant-roles">
+            <text
+              wx:for="{{item.roles}}"
+              wx:for-item="role"
+              wx:key="id"
+              class="variant-role role-{{role.camp}}"
+            >{{role.emoji}} {{role.name}} ×{{role.count}}</text>
+          </view>
+
+          <view wx:if="{{item.nightOrder}}" class="variant-night">
+            <text class="variant-night-label">夜晚顺序</text>
+            <text class="variant-night-value">{{item.nightOrder}}</text>
+          </view>
+
+          <view wx:if="{{item.points.length}}" class="variant-block">
+            <view class="variant-block-title">核心思路</view>
+            <view wx:for="{{item.points}}" wx:for-item="line" wx:key="*this" class="rule-line">
+              <text class="rule-dot">•</text>
+              <text class="rule-text">{{line}}</text>
+            </view>
+          </view>
+
+          <view wx:if="{{item.notes.length}}" class="variant-block">
+            <view class="variant-block-title">补充说明</view>
+            <view wx:for="{{item.notes}}" wx:for-item="line" wx:key="*this" class="rule-line">
+              <text class="rule-dot">•</text>
+              <text class="rule-text">{{line}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 角色 -->
+      <view wx:if="{{game.roles.length}}" class="section">
+        <view class="section-title">角色 / 身份</view>
+        <view wx:for="{{game.roles}}" wx:key="name" class="role-item">
+          <view class="role-emoji">{{item.emoji}}</view>
+          <view class="flex-1">
+            <view class="role-head">
+              <text class="role-name">{{item.name}}</text>
+              <text class="tag">{{item.camp}}</text>
+            </view>
+            <view class="role-desc">{{item.desc}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 规则章节 -->
+      <view wx:for="{{game.sections}}" wx:key="title" class="section">
+        <view class="section-title">{{item.title}}</view>
+        <view class="rule-list">
+          <view
+            wx:for="{{item.items}}"
+            wx:for-item="line"
+            wx:key="*this"
+            class="rule-line"
+          >
+            <text class="rule-dot">•</text>
+            <text class="rule-text">{{line}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 小贴士 -->
+      <view wx:if="{{game.tips.length}}" class="section">
+        <view class="section-title">小贴士</view>
+        <view
+          wx:for="{{game.tips}}"
+          wx:for-item="tip"
+          wx:key="*this"
+          class="tip-item"
+        >
+          <text class="tip-mark">💡</text>
+          <text class="tip-text">{{tip}}</text>
+        </view>
+      </view>
+
+      <view class="btn btn-primary mt-l" bindtap="createRoom">
+        用「{{game.name}}」开一局
+      </view>
+
+      <view class="safe-bottom"></view>
+    </block>
+  </view>
+</view>

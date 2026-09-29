@@ -1,0 +1,155 @@
+<!--pages/index/index.wxml-->
+<view class="page">
+  <nav-bar title="" back="{{false}}" transparent="{{true}}"></nav-bar>
+
+  <view class="body">
+    <!-- 头部问候 -->
+    <view class="hero">
+      <view class="hero-hello">{{user ? 'Hi，' + user.nickname : '欢迎来到私人聚会'}}</view>
+      <view class="hero-title">今晚玩点什么？</view>
+      <view class="hero-sub">狼人杀 · 谁是卧底 · 你画我猜 · 真心话大冒险 · 海龟汤</view>
+    </view>
+
+    <!-- 未登录：卡片本体用普通 view 渲染（外观与已登录那张完全一致），
+         上面盖一个透明 button，只负责把点击转交给微信头像选择器 -->
+    <view wx:if="{{!user}}" class="user-card card card-tap">
+      <view class="user-avatar user-avatar-empty">?</view>
+      <view class="flex-1">
+        <view class="user-name">未登录</view>
+        <view class="user-desc">点击用微信头像昵称登录</view>
+      </view>
+      <view class="chev">›</view>
+
+      <button
+        class="avatar-hit"
+        open-type="chooseAvatar"
+        bindchooseavatar="onQuickAvatar"
+        hover-class="avatar-hit-hover"
+      ></button>
+    </view>
+
+    <!-- 已登录：点卡片进个人资料（改头像昵称 / 退出登录） -->
+    <view wx:else class="user-card card card-tap" bindtap="goProfile">
+      <image
+        wx:if="{{user.avatar}}"
+        class="user-avatar"
+        src="{{user.avatar}}"
+        mode="aspectFill"
+      ></image>
+      <view wx:else class="user-avatar user-avatar-letter">{{user.initial}}</view>
+
+      <view class="flex-1">
+        <view class="user-name">{{user.nickname}}</view>
+        <view class="user-desc">点击修改头像和昵称</view>
+      </view>
+      <view class="chev">›</view>
+    </view>
+
+    <!-- 主操作 -->
+    <view class="actions">
+      <view class="action action-create" bindtap="goCreate" hover-class="action-hover">
+        <view class="action-emoji">🎲</view>
+        <view class="action-title">创建房间</view>
+        <view class="action-sub">选个游戏开一局</view>
+      </view>
+      <view class="action action-join" bindtap="goJoin" hover-class="action-hover">
+        <view class="action-emoji">🔑</view>
+        <view class="action-title">加入房间</view>
+        <view class="action-sub">输入房间号</view>
+      </view>
+    </view>
+
+    <!-- 规则入口 -->
+    <view class="entry card card-tap" bindtap="goRules">
+      <text class="entry-emoji">📖</text>
+      <view class="flex-1">
+        <view class="entry-title">游戏规则介绍</view>
+        <view class="entry-sub">玩之前花两分钟看一眼</view>
+      </view>
+      <view class="chev">›</view>
+    </view>
+
+    <!-- 我的房间 -->
+    <view class="section">
+      <view class="between section-head">
+        <text class="t-section">我的房间</text>
+        <text wx:if="{{rooms.length}}" class="t-hint" bindtap="goJoin">去加入 ›</text>
+      </view>
+
+      <view wx:if="{{loadingRooms}}" class="empty">
+        <text class="t-hint">加载中…</text>
+      </view>
+
+      <view wx:elif="{{!rooms.length}}" class="empty">
+        <text class="empty-emoji">🛋️</text>
+        <text class="t-hint">{{user ? '还没进过房间，创建一个吧' : '登录后可以看到自己的房间'}}</text>
+      </view>
+
+      <block wx:else>
+        <view
+          wx:for="{{rooms}}"
+          wx:key="id"
+          class="room-item card card-tap"
+          bindtap="enterRoom"
+          data-id="{{item.id}}"
+        >
+          <view class="room-emoji" style="background: {{item.gameColor}}22;">{{item.gameEmoji}}</view>
+          <view class="flex-1">
+            <view class="room-title ellipsis">{{item.title}}</view>
+            <view class="room-meta">
+              <text class="t-hint">{{item.gameName}}</text>
+              <text class="dot">·</text>
+              <text class="t-hint">{{item.memberText}} 人</text>
+              <text class="dot">·</text>
+              <text class="t-hint">{{item.timeText}}</text>
+            </view>
+          </view>
+          <view class="room-right">
+            <text class="tag {{item.statusText === '游戏中' ? 'tag-gold' : 'tag-primary'}}">
+              {{item.statusText}}
+            </text>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="safe-bottom"></view>
+  </view>
+
+  <!-- 登录第二步：确认昵称 -->
+  <view wx:if="{{loginVisible}}" class="mask" bindtap="closeLogin"></view>
+  <view wx:if="{{loginVisible}}" class="sheet">
+    <view class="sheet-title">取个昵称</view>
+    <view class="sheet-sub">
+      {{loginHint ? loginHint : '微信不会自动把昵称给小程序，填一个就好（键盘上方可点「使用微信昵称」）'}}
+    </view>
+
+    <view class="login-preview">
+      <image
+        wx:if="{{pendingAvatar}}"
+        class="login-preview-avatar"
+        src="{{pendingAvatar}}"
+        mode="aspectFill"
+      ></image>
+      <view wx:else class="login-preview-avatar login-preview-avatar-empty">?</view>
+    </view>
+
+    <view class="field">
+      <input
+        class="field-input"
+        type="nickname"
+        placeholder="点击填写昵称"
+        placeholder-class="field-placeholder"
+        value="{{pendingNickname}}"
+        maxlength="20"
+        bindinput="onNicknameInput"
+        bindchange="onNicknameInput"
+      />
+    </view>
+
+    <view class="btn btn-primary mt-m {{loggingIn ? 'btn-disabled' : ''}}" bindtap="onConfirmLogin">
+      {{loggingIn ? '登录中…' : '完成登录'}}
+    </view>
+    <view class="btn btn-ghost mt-s" bindtap="closeLogin">取消</view>
+  </view>
+</view>

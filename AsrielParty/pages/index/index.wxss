@@ -1,0 +1,260 @@
+/**pages/index/index.wxss**/
+
+.hero {
+  padding: 32rpx 4rpx 40rpx;
+}
+
+.hero-hello {
+  font-size: 26rpx;
+  color: var(--text-2);
+  margin-bottom: 10rpx;
+}
+
+.hero-title {
+  font-size: 56rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  line-height: 1.25;
+}
+
+.hero-sub {
+  margin-top: 14rpx;
+  font-size: 23rpx;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+/* ---------- 用户卡片（未登录 / 已登录共用同一外观） ---------- */
+.user-card {
+  /* 未登录时卡片上会盖一个透明的 chooseAvatar 按钮，需要它做定位参照 */
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 28rpx;
+}
+
+/*
+ * 未登录卡片上那层透明的点击热区。
+ * 微信的 chooseAvatar 只能挂在 button 上、且必须用户亲自点它才能唤起，
+ * 但 button 自带的一堆默认样式没法完全抹平（渲染出来和普通 view 不一样）。
+ * 所以卡片本体用普通 view 渲染保证外观，再用这个铺满卡片、完全透明的
+ * button 接住点击 —— 外观归 view，授权能力归 button。
+ */
+.avatar-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  box-shadow: none;
+  opacity: 0;
+  z-index: 2;
+}
+
+.avatar-hit::after {
+  border: none;
+  display: none;
+}
+
+/* 按下时把那层透明热区显形，做出和 .card-tap:active 一样的反馈 */
+.avatar-hit-hover {
+  opacity: 1;
+  background: var(--card-hover);
+}
+
+.user-avatar {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: #2a2350;
+  border: 3rpx solid rgba(255, 255, 255, 0.14);
+  flex: none;
+}
+
+.user-avatar-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #cfc6ff;
+  background: linear-gradient(135deg, #3a2f6e, #2a2350);
+}
+
+.user-avatar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: var(--text-3);
+  background: rgba(255, 255, 255, 0.04);
+  border-style: dashed;
+}
+
+.user-name {
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.user-desc {
+  margin-top: 6rpx;
+  font-size: 23rpx;
+  color: var(--text-3);
+}
+
+.chev {
+  font-size: 40rpx;
+  color: var(--text-3);
+  line-height: 1;
+  padding-left: 12rpx;
+}
+
+/* ---------- 登录弹层 ---------- */
+.login-preview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 26rpx;
+}
+
+.login-preview-avatar {
+  width: 152rpx;
+  height: 152rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.16);
+  background: #2a2350;
+}
+
+.login-preview-avatar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  color: var(--text-3);
+  background: rgba(255, 255, 255, 0.04);
+  border-style: dashed;
+}
+
+/* ---------- 主操作 ---------- */
+.actions {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 28rpx;
+}
+
+.action {
+  flex: 1;
+  border-radius: var(--radius);
+  padding: 32rpx 28rpx;
+  min-height: 220rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.action-create {
+  background: linear-gradient(150deg, #7c5cff 0%, #5b3fd6 100%);
+  box-shadow: 0 16rpx 40rpx rgba(124, 92, 255, 0.32);
+}
+
+.action-join {
+  background: linear-gradient(150deg, #2b2450 0%, #1d1838 100%);
+  border: 1rpx solid rgba(255, 255, 255, 0.12);
+}
+
+.action-hover {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.action-emoji {
+  font-size: 52rpx;
+  line-height: 1;
+}
+
+.action-title {
+  margin-top: 20rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.action-sub {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  opacity: 0.7;
+}
+
+/* ---------- 规则入口 ---------- */
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin-bottom: 40rpx;
+}
+
+.entry-emoji {
+  font-size: 42rpx;
+}
+
+.entry-title {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.entry-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+/* ---------- 我的房间 ---------- */
+.section-head {
+  margin-bottom: 20rpx;
+}
+
+.room-item {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  padding: 22rpx 24rpx;
+  margin-bottom: 18rpx;
+}
+
+.room-emoji {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  flex: none;
+}
+
+.room-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  max-width: 380rpx;
+}
+
+.room-meta {
+  margin-top: 6rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.dot {
+  color: var(--text-3);
+  font-size: 22rpx;
+}
+
+.room-right {
+  flex: none;
+}

@@ -1,0 +1,49 @@
+<!--pages/rules/rules.wxml-->
+<view class="page">
+  <nav-bar title="游戏规则"></nav-bar>
+
+  <view class="body">
+    <view class="intro card">
+      <view class="intro-title">玩之前看一眼</view>
+      <view class="intro-text">
+        下面每个游戏都有完整规则、角色说明和小贴士。房间里的房主可以随时切换游戏类型。
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="empty">
+      <text class="t-hint">加载中…</text>
+    </view>
+
+    <view wx:elif="{{!games.length}}" class="empty">
+      <text class="empty-emoji">🎲</text>
+      <text class="t-hint">暂时没有可玩的游戏</text>
+    </view>
+
+    <block wx:else>
+      <view
+        wx:for="{{games}}"
+        wx:key="id"
+        class="game-card card card-tap"
+        bindtap="openRule"
+        data-id="{{item.id}}"
+      >
+        <view class="game-emoji" style="background: {{item.color}}26;">{{item.emoji}}</view>
+
+        <view class="flex-1">
+          <view class="game-name">{{item.name}}</view>
+          <view class="game-tagline">{{item.tagline}}</view>
+          <view class="game-tags">
+            <text wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" class="tag">{{t}}</text>
+          </view>
+        </view>
+
+        <view class="game-right">
+          <text class="t-hint">{{item.peopleText}}</text>
+          <text class="chev">›</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="safe-bottom"></view>
+  </view>
+</view>

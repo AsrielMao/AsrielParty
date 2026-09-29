@@ -1,0 +1,111 @@
+<!--components/undercover-panel/undercover-panel.wxml-->
+<view class="uc" wx:if="{{room && room.gameState}}">
+  <!-- 我的词：默认藏着，点一下翻开 -->
+  <view
+    class="uc-word card {{room.gameState.myRole === 'undercover' ? 'is-undercover' : ''}}"
+    bindtap="onToggleWord"
+    hover-class="uc-word-hover"
+  >
+    <view class="uc-word-top">
+      <text class="uc-word-role">
+        {{room.gameState.myRole === 'undercover' ? '你的身份：卧底' : '你的身份：平民'}}
+      </text>
+      <text class="uc-word-toggle">{{wordVisible ? '点一下藏起来' : '点一下看词'}}</text>
+    </view>
+    <view class="uc-word-body">
+      <text wx:if="{{wordVisible}}" class="uc-word-text">{{room.gameState.myWord}}</text>
+      <text wx:else class="uc-word-mask">•••••</text>
+    </view>
+  </view>
+
+  <!-- 进度 -->
+  <view class="uc-status">
+    <text class="uc-round">第 {{room.gameState.round}} 轮</text>
+    <text class="uc-sep">·</text>
+    <text>场上 {{room.gameState.aliveCount}} 人</text>
+    <text class="uc-sep">·</text>
+    <text>已投 {{room.gameState.votedCount}}/{{room.gameState.aliveCount}}</text>
+  </view>
+
+  <!-- 结束横幅 -->
+  <view wx:if="{{room.gameState.winner}}" class="uc-over">
+    <text class="uc-over-emoji">{{room.gameState.winner === 'civilian' ? '🎉' : '🕵️'}}</text>
+    <text class="uc-over-text">
+      {{room.gameState.winner === 'civilian' ? '平民阵营获胜' : '卧底获胜'}}
+    </text>
+  </view>
+
+  <!-- 本轮结算 -->
+  <view wx:if="{{room.gameState.roundResult}}" class="uc-result card">
+    <view wx:if="{{room.gameState.roundResult.tie}}" class="uc-result-title">
+      平票，本轮没人出局
+    </view>
+    <block wx:else>
+      <view class="uc-result-title">
+        {{room.gameState.roundResult.outNickname}} 出局
+      </view>
+      <view class="uc-result-sub">
+        身份：{{room.gameState.roundResult.outRole === 'undercover' ? '卧底' : '平民'}}
+        · 他的词是「{{room.gameState.roundResult.outWord}}」
+      </view>
+    </block>
+
+    <view wx:if="{{room.gameState.roundResult.tally.length}}" class="uc-tally">
+      <view
+        wx:for="{{room.gameState.roundResult.tally}}"
+        wx:for-item="row"
+        wx:key="userId"
+        class="uc-tally-row"
+      >
+        <text class="uc-tally-name">{{row.nickname}}</text>
+        <text class="uc-tally-count">{{row.count}} 票</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 玩家列表：点人投票 -->
+  <scroll-view class="uc-list" scroll-y>
+    <view
+      wx:for="{{room.gameState.players}}"
+      wx:key="userId"
+      class="uc-player {{item.alive ? '' : 'is-out'}}"
+      bindtap="onTapPlayer"
+      data-id="{{item.userId}}"
+      hover-class="uc-player-hover"
+    >
+      <view class="uc-player-seat">{{item.seat + 1}}</view>
+
+      <view class="flex-1">
+        <view class="uc-player-name">
+          <text>{{item.nickname}}</text>
+          <text wx:if="{{item.isMe}}" class="uc-player-me">（我）</text>
+        </view>
+        <view class="uc-player-sub">
+          <text wx:if="{{!item.alive}}">{{item.left ? '已退出房间' : '已出局'}}</text>
+          <text wx:elif="{{item.voted}}">已投票</text>
+          <text wx:else>还没投</text>
+        </view>
+      </view>
+
+      <text wx:if="{{!item.alive}}" class="uc-tag uc-tag-out">出局</text>
+      <text
+        wx:elif="{{item.canVote}}"
+        class="uc-tag uc-tag-vote"
+      >投票</text>
+      <text wx:elif="{{item.voted}}" class="uc-tag uc-tag-done">已投</text>
+    </view>
+  </scroll-view>
+
+  <!-- 房主推进 -->
+  <view
+    wx:if="{{isOwner && room.gameState.phase === 'result'}}"
+    class="btn btn-primary mt-m {{busy ? 'btn-disabled' : ''}}"
+    bindtap="onNextRound"
+  >
+    进入第 {{room.gameState.round + 1}} 轮
+  </view>
+  <view
+    wx:elif="{{room.gameState.phase === 'result'}}"
+    class="uc-wait"
+  >等房主开下一轮…</view>
+</view>

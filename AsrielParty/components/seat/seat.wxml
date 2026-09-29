@@ -1,0 +1,32 @@
+<view
+  class="seat {{member ? 'is-occupied' : 'is-empty'}} {{member && member.isSelf ? 'is-self' : ''}}"
+  style="left: {{pos.left}}%; top: {{pos.top}}%;"
+  hover-class="seat-hover"
+  hover-stay-time="80"
+  bindtap="onTap"
+>
+  <view class="avatar-wrap">
+    <!-- 说话时的外圈光圈 -->
+    <view class="ring {{speaking ? 'ring-on' : ''}}"></view>
+
+    <image
+      wx:if="{{member && member.avatar && !avatarFailed}}"
+      class="avatar"
+      src="{{member.avatar}}"
+      mode="aspectFill"
+      binderror="onAvatarError"
+    ></image>
+    <view wx:elif="{{member}}" class="avatar avatar-letter">{{member.initial}}</view>
+    <view wx:else class="avatar avatar-plus"><text class="plus">+</text></view>
+  </view>
+
+  <view class="name">{{member ? member.nickname : '空位'}}</view>
+
+  <view class="badges">
+    <text wx:if="{{member && member.isBot}}" class="badge badge-bot">人机</text>
+    <text wx:elif="{{member && member.isOwner}}" class="badge badge-owner">房主</text>
+    <text wx:elif="{{member && member.ready}}" class="badge badge-ready">已准备</text>
+    <text wx:elif="{{!member}}" class="badge badge-empty">可加入</text>
+    <text wx:if="{{member && !member.online}}" class="badge badge-off">离线</text>
+  </view>
+</view>

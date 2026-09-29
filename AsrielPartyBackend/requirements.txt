@@ -1,0 +1,6 @@
+# 后端依赖。装的时候用项目里的虚拟环境：
+#   .venv/Scripts/python.exe -m pip install -r requirements.txt
+#
+# 只依赖 Django 本身：接口都是简单 JSON 接口，没必要引入 DRF
+# （而且当前 Django 6.1 比较新，第三方包的兼容性没保证）。
+Django>=6.1,<7.0

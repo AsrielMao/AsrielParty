@@ -1,0 +1,135 @@
+/**pages/create/create.wxss**/
+
+.section {
+  margin-bottom: 44rpx;
+}
+
+.label {
+  font-size: 26rpx;
+  color: var(--text-2);
+  margin-bottom: 18rpx;
+  padding-left: 4rpx;
+}
+
+/* ---------- 游戏选择 ---------- */
+.game-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.game-cell {
+  position: relative;
+  width: calc((100% - 20rpx) / 2);
+  min-height: 168rpx;
+  padding: 26rpx 24rpx;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 2rpx solid var(--border);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.game-cell:active {
+  transform: scale(0.98);
+}
+
+.game-cell.is-active {
+  background: rgba(124, 92, 255, 0.18);
+  border-color: rgba(124, 92, 255, 0.65);
+}
+
+.game-cell-emoji {
+  font-size: 46rpx;
+  line-height: 1;
+}
+
+.game-cell-name {
+  margin-top: 14rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.game-cell-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+.game-cell-check {
+  position: absolute;
+  right: 20rpx;
+  top: 20rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- 版型选择 ---------- */
+.variant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.variant-item {
+  padding: 26rpx 26rpx 22rpx;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 2rpx solid var(--border);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.variant-item.is-active {
+  background: rgba(124, 92, 255, 0.16);
+  border-color: rgba(124, 92, 255, 0.6);
+}
+
+.variant-name {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.variant-desc {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+.variant-roles {
+  margin-top: 18rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.variant-role {
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-2);
+}
+
+/* 狼阵营的身份用红色区分一下 */
+.variant-role.role-wolf {
+  background: rgba(255, 95, 109, 0.16);
+  color: #ff8a94;
+}
+
+/* ---------- 固定座位数的说明条（非狼人杀游戏） ---------- */
+.seats-note {
+  padding: 22rpx 26rpx;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1rpx solid var(--border);
+  font-size: 24rpx;
+  color: var(--text-2);
+  line-height: 1.7;
+}

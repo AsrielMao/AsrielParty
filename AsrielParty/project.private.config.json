@@ -1,0 +1,15 @@
+{
+  "description": "项目私有配置（个人用，一般不进仓库）。urlCheck 设成 false：开发时后端跑在 http://127.0.0.1:8000，不是 https，微信默认会拦掉请求。等后端上了 https 域名，可以改回 true。",
+  "libVersion": "3.17.3",
+  "projectname": "AsrielParty",
+  "setting": {
+    "urlCheck": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "skylineRenderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "compileHotReLoad": true
+  }
+}

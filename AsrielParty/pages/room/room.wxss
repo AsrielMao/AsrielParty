@@ -1,0 +1,640 @@
+/**pages/room/room.wxss**/
+
+.room-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.full-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+/* ---------- 信息条 ---------- */
+.room-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 32rpx 20rpx;
+  flex: none;
+}
+
+.head-code {
+  display: flex;
+  flex-direction: column;
+}
+
+.head-code-label {
+  font-size: 19rpx;
+  color: var(--text-3);
+}
+
+.head-code-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  letter-spacing: 3rpx;
+  color: var(--text-2);
+}
+
+.head-game {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  height: 60rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  background: rgba(124, 92, 255, 0.18);
+  border: 1rpx solid rgba(124, 92, 255, 0.35);
+}
+
+.head-game.is-owner {
+  border-color: rgba(124, 92, 255, 0.6);
+}
+
+.head-game-hover {
+  background: rgba(124, 92, 255, 0.3);
+}
+
+.head-game-emoji {
+  font-size: 28rpx;
+}
+
+.head-game-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #cfc6ff;
+}
+
+.head-game-edit {
+  font-size: 20rpx;
+  color: var(--text-3);
+  margin-left: 2rpx;
+}
+
+.head-count {
+  display: flex;
+  align-items: baseline;
+}
+
+.head-count-num {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.head-count-total {
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+/* ---------- 座位区 ---------- */
+.seat-stage {
+  flex: 1;
+  position: relative;
+  margin: 0 20rpx;
+  min-height: 0;
+}
+
+.stage-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 320rpx;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.center-emoji {
+  font-size: 76rpx;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.center-title {
+  margin-top: 14rpx;
+  max-width: 320rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.center-status {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+.center-voice {
+  margin-top: 16rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: rgba(53, 214, 164, 0.14);
+  color: var(--success);
+  font-size: 21rpx;
+}
+
+.center-voice-mock {
+  color: rgba(53, 214, 164, 0.6);
+}
+
+.center-voice-err {
+  background: rgba(255, 95, 109, 0.14);
+  color: var(--danger);
+  max-width: 320rpx;
+  line-height: 1.45;
+}
+
+/* ---------- 底部操作栏 ---------- */
+.room-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid var(--border);
+  background: rgba(16, 14, 28, 0.9);
+}
+
+.bar-icon {
+  width: 92rpx;
+  height: 92rpx;
+  flex: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 26rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+}
+
+/* button 版本的邀请按钮要抹掉默认样式 */
+.bar-share::after {
+  border: none;
+  display: none;
+}
+
+.bar-icon.is-on {
+  background: rgba(53, 214, 164, 0.16);
+  border-color: rgba(53, 214, 164, 0.4);
+}
+
+.bar-icon-glyph {
+  font-size: 30rpx;
+  line-height: 1;
+}
+
+.bar-icon-label {
+  margin-top: 4rpx;
+  font-size: 18rpx;
+  color: var(--text-3);
+}
+
+.bar-icon.is-on .bar-icon-label {
+  color: var(--success);
+}
+
+.bar-main {
+  flex: 1;
+  height: 92rpx;
+  border-radius: 26rpx;
+  background: linear-gradient(135deg, var(--primary) 0%, #9d7bff 100%);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 26rpx rgba(124, 92, 255, 0.32);
+}
+
+.bar-main-disabled {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-3);
+  box-shadow: none;
+}
+
+.bar-hover {
+  opacity: 0.75;
+}
+
+/* ---------- 游戏选择弹层 ---------- */
+.picker-scroll {
+  max-height: 620rpx;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 22rpx 24rpx;
+  margin-bottom: 14rpx;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.045);
+  border: 2rpx solid transparent;
+}
+
+.picker-item.is-active {
+  background: rgba(124, 92, 255, 0.16);
+  border-color: rgba(124, 92, 255, 0.5);
+}
+
+.picker-emoji {
+  font-size: 40rpx;
+}
+
+.picker-name {
+  font-size: 29rpx;
+  font-weight: 600;
+}
+
+.picker-sub {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--text-3);
+}
+
+.picker-check {
+  color: var(--primary-2);
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+/* ---------- 谁是卧底 ---------- */
+
+/**
+ * 自定义组件的宿主节点也是 flex item，它的宽度默认由「内容」决定 ——
+ * 而组件内部又写着 width:100%，两边互相等，最后就塌成内容里最宽的那块
+ * （表现就是「所有东西只占屏幕左半边」）。
+ * 这个类给宿主节点一个明确的 flex:1，把宽度定死。
+ */
+.panel-fill {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+/* 开局后游戏面板占满座位区那块空间 */
+.uc-stage {
+  flex: 1;
+  min-height: 0;
+  margin: 0 32rpx;
+  display: flex;
+}
+
+/* 狼人杀开局后的牌桌：同样占满座位区，面板自己负责内部滚动 */
+.ww-live {
+  flex: 1;
+  min-height: 0;
+  margin: 0 24rpx;
+  display: flex;
+}
+
+/* 你画我猜开局后的画板：同上 */
+.dp-stage {
+  flex: 1;
+  min-height: 0;
+  margin: 0 24rpx;
+  display: flex;
+}
+
+/* 开局前的那条「卧底人数」设置 */
+.uc-setup {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: 0 32rpx 16rpx;
+  padding: 18rpx 24rpx;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 95, 109, 0.1);
+  border: 1rpx solid rgba(255, 95, 109, 0.28);
+}
+
+.uc-setup-hover {
+  opacity: 0.8;
+}
+
+.uc-setup-label {
+  font-size: 23rpx;
+  color: #ff8a94;
+}
+
+.uc-setup-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.uc-setup-hint {
+  margin-left: auto;
+  font-size: 21rpx;
+  color: var(--text-3);
+}
+
+/* ============ 狼人杀：左右座位 + 中间记事板 ============ */
+
+.ww-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 16rpx;
+  padding: 0 20rpx 12rpx;
+}
+
+/* 左右两列座位 */
+.ww-col {
+  flex: none;
+  width: 176rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 12rpx;
+}
+
+.ww-seat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ww-seat-hover {
+  opacity: 0.75;
+}
+
+.ww-avatar {
+  position: relative;
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: #2a2350;
+  border: 3rpx solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ww-seat.is-self .ww-avatar {
+  border-color: #7c5cff;
+  box-shadow: 0 0 16rpx rgba(124, 92, 255, 0.5);
+}
+
+.ww-seat.is-speaking .ww-avatar {
+  border-color: #35d6a4;
+  box-shadow: 0 0 18rpx rgba(53, 214, 164, 0.6);
+}
+
+.ww-seat.is-empty .ww-avatar {
+  background: rgba(255, 255, 255, 0.03);
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.ww-avatar-img {
+  width: 100%;
+  height: 100%;
+}
+
+.ww-avatar-text {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #cfc6ff;
+}
+
+.ww-avatar-empty {
+  font-size: 36rpx;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.ww-name {
+  margin-top: 8rpx;
+  max-width: 176rpx;
+  font-size: 22rpx;
+  color: var(--text);
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ww-seat.is-empty .ww-name {
+  color: var(--text-3);
+}
+
+.ww-mark {
+  margin-top: 6rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+  font-size: 19rpx;
+  line-height: 26rpx;
+  white-space: nowrap;
+}
+
+.ww-mark.mark-good {
+  background: rgba(53, 214, 164, 0.18);
+  color: var(--success);
+}
+
+.ww-mark.mark-wolf {
+  background: rgba(255, 95, 109, 0.2);
+  color: #ff8a94;
+}
+
+.ww-mark.mark-owner {
+  background: rgba(255, 200, 97, 0.16);
+  color: var(--gold);
+}
+
+.ww-mark.mark-bot {
+  background: rgba(124, 92, 255, 0.2);
+  color: var(--primary-2);
+}
+
+.ww-mark.mark-none {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-3);
+}
+
+/* 中间：开局前留空（铺一层背景），开局后是进程记录 */
+.ww-middle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  border-radius: var(--radius);
+  border: 1rpx solid var(--border);
+  padding: 22rpx 20rpx;
+  /* 「简单的背景图」——纯 CSS 画的，想换成真图片把 url 填进 background-image 就行 */
+  background-color: #14122a;
+  background-image:
+    radial-gradient(80% 50% at 50% 0%, rgba(124, 92, 255, 0.22), transparent 70%),
+    radial-gradient(60% 40% at 50% 100%, rgba(90, 200, 140, 0.08), transparent 70%),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.025) 0,
+      rgba(255, 255, 255, 0.025) 2rpx,
+      transparent 2rpx,
+      transparent 16rpx
+    );
+}
+
+.ww-middle-art {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  opacity: 0.5;
+}
+
+.ww-middle-emoji {
+  font-size: 76rpx;
+  line-height: 1;
+}
+
+.ww-middle-title {
+  font-size: 24rpx;
+  color: var(--text-3);
+}
+
+.ww-middle-hint {
+  font-size: 21rpx;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--text-3);
+}
+
+/* 狼人杀的底部：⋯ + 开麦/闭麦 + 准备/开始 */
+.ww-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid var(--border);
+  background: rgba(16, 14, 28, 0.9);
+}
+
+.ww-more {
+  flex: none;
+  width: 84rpx;
+  height: 92rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ww-more-glyph {
+  font-size: 34rpx;
+  color: var(--text-2);
+  line-height: 1;
+}
+
+.ww-mic {
+  flex: none;
+  width: 210rpx;
+  height: 92rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  transition: flex 0.2s ease, height 0.2s ease, background 0.15s ease;
+}
+
+/* 开局后：准备按钮消失，开麦占满刚才两个按钮的位置并变高 */
+.ww-mic.is-big {
+  flex: 1;
+  width: auto;
+  height: 112rpx;
+}
+
+.ww-mic.is-on {
+  background: rgba(53, 214, 164, 0.16);
+  border-color: rgba(53, 214, 164, 0.4);
+}
+
+.ww-mic-glyph {
+  font-size: 32rpx;
+  line-height: 1;
+}
+
+.ww-mic-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.ww-mic.is-on .ww-mic-text {
+  color: var(--success);
+}
+
+.ww-main {
+  flex: 1;
+  height: 92rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, var(--primary) 0%, #9d7bff 100%);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 26rpx rgba(124, 92, 255, 0.32);
+}
+
+.ww-main.is-disabled {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-3);
+  box-shadow: none;
+}
+
+/* ============ 标记某个玩家 ============ */
+
+.mark-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.mark-option {
+  padding: 18rpx 30rpx;
+  border-radius: 999rpx;
+  font-size: 27rpx;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2rpx solid transparent;
+  color: var(--text-2);
+}
+
+.mark-option.mark-good.is-active {
+  background: rgba(53, 214, 164, 0.18);
+  border-color: rgba(53, 214, 164, 0.6);
+  color: var(--success);
+}
+
+.mark-option.mark-wolf.is-active {
+  background: rgba(255, 95, 109, 0.18);
+  border-color: rgba(255, 95, 109, 0.6);
+  color: #ff8a94;
+}

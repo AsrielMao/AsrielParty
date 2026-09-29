@@ -1,0 +1,59 @@
+<!--pages/profile/profile.wxml-->
+<view class="page">
+  <nav-bar title="个人资料"></nav-bar>
+
+  <view class="body">
+    <view wx:if="{{fromLogin && !isLogged}}" class="notice">
+      第一次来，设置好头像和昵称就可以开玩了
+    </view>
+
+    <!-- 头像 -->
+    <view class="avatar-section">
+      <button
+        class="avatar-btn"
+        open-type="chooseAvatar"
+        bindchooseavatar="onChooseAvatar"
+        hover-class="avatar-btn-hover"
+      >
+        <image wx:if="{{avatar}}" class="avatar-img" src="{{avatar}}" mode="aspectFill"></image>
+        <view wx:else class="avatar-placeholder">
+          <text class="avatar-plus">+</text>
+        </view>
+        <view class="avatar-edit">
+          <text class="avatar-edit-icon">相机</text>
+        </view>
+      </button>
+      <view class="avatar-tip">点击使用微信头像</view>
+    </view>
+
+    <!-- 昵称 -->
+    <view class="form-section">
+      <view class="label">昵称</view>
+      <view class="field">
+        <input
+          class="field-input"
+          type="nickname"
+          placeholder="填写昵称"
+          placeholder-class="field-placeholder"
+          value="{{nickname}}"
+          maxlength="20"
+          bindinput="onNicknameInput"
+          bindchange="onNicknameInput"
+        />
+      </view>
+      <view class="t-hint mt-s">最多 20 个字，之后随时可以改</view>
+    </view>
+
+    <!-- 保存 -->
+    <view
+      class="btn btn-primary mt-l {{saving ? 'btn-disabled' : ''}}"
+      bindtap="onSave"
+    >
+      {{isLogged ? '保存' : '微信登录并保存'}}
+    </view>
+
+    <view wx:if="{{isLogged}}" class="btn btn-danger mt-m" bindtap="onLogout">退出登录</view>
+
+    <view class="safe-bottom"></view>
+  </view>
+</view>

@@ -1,0 +1,173 @@
+<!--components/draw-panel/draw-panel.wxml-->
+<!--
+  你画我猜牌桌。
+
+  画板（canvas）**一直挂在那里**，选词和结算只是盖一层遮罩上去 ——
+  这样 canvas 节点不会被销毁重建，画就一直在。
+-->
+<view class="dp" wx:if="{{gs}}">
+  <!-- 轮次 / 阶段 / 倒计时 -->
+  <view class="dp-top">
+    <text class="dp-round">第 {{gs.round}}/{{gs.totalRounds}} 轮</text>
+    <text class="dp-phase">{{phaseTitle}}</text>
+    <text wx:if="{{timerText}}" class="dp-timer">{{timerText}}</text>
+  </view>
+
+  <!-- 谁在画 / 猜对进度 -->
+  <view class="dp-status">
+    <text class="dp-who {{gs.isDrawer ? 'is-me' : ''}}">
+      {{gs.isDrawer ? '你来画' : gs.drawerNickname + ' 在画'}}
+    </text>
+    <text class="dp-progress">猜对 {{gs.solvedCount}}/{{gs.guesserCount}}</text>
+  </view>
+
+  <!-- 画板 -->
+  <view class="dp-board-wrap">
+    <canvas
+      type="2d"
+      id="board"
+      class="dp-board"
+      disable-scroll="{{gs.canDraw}}"
+      bindtouchstart="onTouchStart"
+      bindtouchmove="onTouchMove"
+      bindtouchend="onTouchEnd"
+      bindtouchcancel="onTouchEnd"
+    ></canvas>
+
+    <!-- 选词 -->
+    <view wx:if="{{gs.phase === 'picking'}}" class="dp-mask">
+      <block wx:if="{{gs.isDrawer}}">
+        <view class="dp-mask-title">挑一个词开始画</view>
+        <view class="dp-options">
+          <view
+            wx:for="{{gs.wordOptions}}"
+            wx:key="*this"
+            class="dp-option"
+            bindtap="onPickWord"
+            data-index="{{index}}"
+            hover-class="dp-option-hover"
+          >{{item}}</view>
+        </view>
+        <view class="dp-mask-hint">等太久没选的话会自动帮你挑一个</view>
+      </block>
+      <block wx:else>
+        <view class="dp-mask-title">{{gs.drawerNickname}} 正在选词…</view>
+        <view class="dp-mask-hint">马上开始</view>
+      </block>
+    </view>
+
+    <!-- 本轮结算 -->
+    <view wx:if="{{gs.phase === 'result'}}" class="dp-mask">
+      <view class="dp-mask-title">答案是「{{gs.roundResult.word}}」</view>
+      <view class="dp-mask-hint">
+        {{gs.roundResult.timeout ? '时间到，没人全猜出来' : '大家猜出来了'}}
+      </view>
+
+      <view wx:if="{{gs.roundResult.gain.length}}" class="dp-gains">
+        <view wx:for="{{gs.roundResult.gain}}" wx:key="userId" class="dp-gain-row">
+          <text class="dp-gain-name ellipsis">{{item.nickname}}</text>
+          <text class="dp-gain-value">+{{item.gain}}</text>
+        </view>
+      </view>
+      <view wx:else class="dp-mask-hint">这一轮谁都没猜出来</view>
+
+      <view class="dp-btn" bindtap="onAdvance" hover-class="dp-btn-hover">
+        {{gs.round >= gs.totalRounds ? '看总成绩' : '下一轮'}}
+      </view>
+    </view>
+
+    <!-- 整局结束 -->
+    <view wx:if="{{gs.phase === 'over'}}" class="dp-mask">
+      <view class="dp-mask-title">本局结束</view>
+      <view class="dp-over-list">
+        <view
+          wx:for="{{gs.scores}}"
+          wx:key="userId"
+          class="dp-over-row {{item.score === topScore ? 'is-top' : ''}}"
+        >
+          <text class="dp-over-seat">{{item.seat + 1}}</text>
+          <text class="dp-over-name ellipsis">{{item.nickname}}</text>
+          <text wx:if="{{item.isBot}}" class="dp-over-bot">人机</text>
+          <text class="dp-over-score">{{item.score}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 题目提示：画手/猜对的人看到答案，其他人只看到字数和词类 -->
+  <!-- 选词阶段不用占这一行（遮罩上已经说清楚了） -->
+  <view wx:if="{{gs.phase !== 'picking'}}" class="dp-word">
+    <block wx:if="{{gs.myWord}}">
+      <text class="dp-word-label">答案</text>
+      <text class="dp-word-value">{{gs.myWord}}</text>
+    </block>
+    <block wx:else>
+      <text class="dp-word-label">{{gs.wordCategory}}</text>
+      <text class="dp-word-value">{{gs.wordLength}} 个字</text>
+    </block>
+  </view>
+
+  <!-- 画笔：只有画手有 -->
+  <view wx:if="{{gs.canDraw}}" class="dp-pens">
+    <view class="dp-colors">
+      <view
+        wx:for="{{colors}}"
+        wx:key="*this"
+        class="dp-color {{penColor === item ? 'is-active' : ''}}"
+        style="background: {{item}};"
+        bindtap="onPickColor"
+        data-color="{{item}}"
+      ></view>
+    </view>
+
+    <view class="dp-widths">
+      <view
+        wx:for="{{widths}}"
+        wx:key="*this"
+        class="dp-width {{penWidth === item ? 'is-active' : ''}}"
+        bindtap="onPickWidth"
+        data-width="{{item}}"
+      >
+        <view class="dp-width-dot" style="width: {{item}}px; height: {{item}}px;"></view>
+      </view>
+    </view>
+
+    <view class="dp-clear" bindtap="onClear" hover-class="dp-clear-hover">擦掉</view>
+  </view>
+
+  <!-- 猜词 -->
+  <view wx:if="{{gs.canGuess}}" class="dp-input-row">
+    <input
+      class="dp-input"
+      value="{{guessText}}"
+      placeholder="打字猜猜他画的是什么…"
+      placeholder-class="dp-input-ph"
+      confirm-type="send"
+      maxlength="20"
+      bindinput="onGuessInput"
+      bindconfirm="onGuessSubmit"
+    />
+    <view class="dp-send" bindtap="onGuessSubmit" hover-class="dp-send-hover">发送</view>
+  </view>
+  <view wx:elif="{{gs.mySolved}}" class="dp-tip is-good">你已经猜对了 🎉 看他们猜</view>
+  <view wx:elif="{{gs.isDrawer && gs.phase === 'drawing'}}" class="dp-tip">画吧，等他们猜</view>
+
+  <!-- 猜测流水 -->
+  <scroll-view
+    wx:if="{{gs.guesses.length}}"
+    class="dp-guesses"
+    scroll-y
+    scroll-into-view="{{lastGuessId}}"
+  >
+    <view
+      wx:for="{{gs.guesses}}"
+      wx:key="key"
+      id="guess-{{item.key}}"
+      class="dp-guess-row {{item.correct ? 'is-correct' : ''}}"
+    >
+      <text class="dp-guess-name">{{item.nickname}}</text>
+      <text class="dp-guess-text ellipsis">{{item.correct ? '猜对了！' : item.text}}</text>
+    </view>
+  </scroll-view>
+  <view wx:else class="dp-guesses is-empty">别人猜的词会出现在这里</view>
+</view>

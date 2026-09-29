@@ -1,0 +1,90 @@
+<!--pages/create/create.wxml-->
+<view class="page">
+  <nav-bar title="创建房间"></nav-bar>
+
+  <view class="body">
+    <!-- 游戏类型 -->
+    <view class="section">
+      <view class="label">玩什么游戏</view>
+      <view class="game-grid">
+        <view
+          wx:for="{{games}}"
+          wx:key="id"
+          class="game-cell {{gameId === item.id ? 'is-active' : ''}}"
+          bindtap="onPickGame"
+          data-id="{{item.id}}"
+        >
+          <view class="game-cell-emoji">{{item.emoji}}</view>
+          <view class="game-cell-name">{{item.name}}</view>
+          <view class="game-cell-sub">{{item.peopleText}}</view>
+          <view wx:if="{{gameId === item.id}}" class="game-cell-check">✓</view>
+        </view>
+      </view>
+      <view wx:if="{{loadingGames}}" class="t-hint mt-s">加载游戏列表…</view>
+    </view>
+
+    <!-- 版型：有版型的游戏（狼人杀）选完版型，座位数就定了 -->
+    <view wx:if="{{variants.length}}" class="section">
+      <view class="label">选个版型</view>
+      <view class="variant-list">
+        <view
+          wx:for="{{variants}}"
+          wx:key="id"
+          class="variant-item {{variantId === item.id ? 'is-active' : ''}}"
+          bindtap="onPickVariant"
+          data-id="{{item.id}}"
+        >
+          <view class="between">
+            <text class="variant-name">{{item.name}}</text>
+            <text class="tag tag-primary">{{item.seats}} 人</text>
+          </view>
+
+          <view class="variant-desc">{{item.desc}}</view>
+
+          <view class="variant-roles">
+            <text
+              wx:for="{{item.roles}}"
+              wx:for-item="role"
+              wx:key="id"
+              class="variant-role role-{{role.camp}}"
+            >{{role.emoji}} {{role.name}} ×{{role.count}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="t-hint mt-s">版型决定了座位数和角色配置</view>
+    </view>
+
+    <!-- 其他游戏：座位数固定 -->
+    <view wx:else class="section">
+      <view class="label">房间座位</view>
+      <view class="seats-note">
+        固定 {{maxPlayers}} 个座位。不用凑满也能开局，达到游戏最低人数就能开始。
+      </view>
+    </view>
+
+    <!-- 房间名 -->
+    <view class="section">
+      <view class="label">房间名（可不填）</view>
+      <view class="field">
+        <input
+          class="field-input"
+          placeholder="例如：周五晚上的局"
+          placeholder-class="field-placeholder"
+          value="{{title}}"
+          maxlength="20"
+          bindinput="onTitleInput"
+        />
+      </view>
+    </view>
+
+    <view class="btn btn-primary mt-l {{creating ? 'btn-disabled' : ''}}" bindtap="onCreate">
+      创建房间
+    </view>
+
+    <view class="t-hint mt-m" style="text-align: center;">
+      创建后你会成为房主，可以随时切换游戏类型
+    </view>
+
+    <view class="safe-bottom"></view>
+  </view>
+</view>

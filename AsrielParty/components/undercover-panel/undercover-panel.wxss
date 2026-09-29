@@ -1,0 +1,257 @@
+.uc {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+/* ---------- 我的词 ---------- */
+.uc-word {
+  flex: none;
+  margin-bottom: 20rpx;
+  padding: 22rpx 24rpx;
+  border-radius: var(--radius);
+  border: 2rpx solid rgba(124, 92, 255, 0.42);
+  background: rgba(124, 92, 255, 0.12);
+  transition: background 0.15s ease;
+}
+
+.uc-word.is-undercover {
+  border-color: rgba(255, 95, 109, 0.45);
+  background: rgba(255, 95, 109, 0.12);
+}
+
+.uc-word-hover {
+  opacity: 0.85;
+}
+
+.uc-word-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.uc-word-role {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--primary-2);
+}
+
+.uc-word.is-undercover .uc-word-role {
+  color: #ff8a94;
+}
+
+.uc-word-toggle {
+  font-size: 21rpx;
+  color: var(--text-3);
+}
+
+.uc-word-body {
+  margin-top: 12rpx;
+  min-height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uc-word-text {
+  font-size: 64rpx;
+  font-weight: 700;
+  letter-spacing: 8rpx;
+  color: var(--text);
+}
+
+.uc-word-mask {
+  font-size: 44rpx;
+  letter-spacing: 10rpx;
+  color: var(--text-3);
+}
+
+/* ---------- 进度 ---------- */
+.uc-status {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  margin-bottom: 18rpx;
+  font-size: 23rpx;
+  color: var(--text-3);
+}
+
+.uc-sep {
+  opacity: 0.55;
+}
+
+/* ---------- 结束横幅 ---------- */
+.uc-over {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+  margin-bottom: 18rpx;
+  padding: 20rpx;
+  border-radius: var(--radius);
+  background: rgba(255, 200, 97, 0.14);
+  border: 1rpx solid rgba(255, 200, 97, 0.3);
+}
+
+.uc-over-emoji {
+  font-size: 36rpx;
+}
+
+.uc-over-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+/* ---------- 本轮结算 ---------- */
+.uc-result {
+  flex: none;
+  margin-bottom: 18rpx;
+  padding: 24rpx;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1rpx solid var(--border);
+}
+
+.uc-result-title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.uc-result-sub {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.uc-tally {
+  margin-top: 16rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx solid var(--border);
+}
+
+.uc-tally-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5rpx 0;
+  font-size: 23rpx;
+  color: var(--text-2);
+}
+
+.uc-tally-count {
+  color: var(--gold);
+}
+
+/* ---------- 玩家列表 ---------- */
+.uc-list {
+  flex: 1;
+  min-height: 0;
+}
+
+.uc-player {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 20rpx 22rpx;
+  margin-bottom: 12rpx;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1rpx solid var(--border);
+}
+
+.uc-player-hover {
+  background: var(--card-hover);
+}
+
+.uc-player.is-out {
+  opacity: 0.45;
+}
+
+.uc-player-seat {
+  flex: none;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-3);
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uc-player-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.uc-player-me {
+  font-size: 21rpx;
+  font-weight: 400;
+  color: var(--text-3);
+}
+
+.uc-player-sub {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: var(--text-3);
+}
+
+.uc-tag {
+  flex: none;
+  height: 44rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+}
+
+.uc-tag-vote {
+  background: rgba(124, 92, 255, 0.22);
+  color: var(--primary-2);
+}
+
+.uc-tag-done {
+  background: rgba(53, 214, 164, 0.16);
+  color: var(--success);
+}
+
+.uc-tag-out {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-3);
+}
+
+.uc-wait {
+  flex: none;
+  padding: 22rpx 0;
+  text-align: center;
+  font-size: 23rpx;
+  color: var(--text-3);
+}
+
+/* 房主那个「进入下一轮」按钮：组件不自带 .btn，这里自己写一份 */
+.uc-next {
+  flex: none;
+  margin-top: 22rpx;
+  height: 92rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, var(--primary) 0%, #9d7bff 100%);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 26rpx rgba(124, 92, 255, 0.32);
+}
+
+.uc-next-hover {
+  opacity: 0.8;
+}

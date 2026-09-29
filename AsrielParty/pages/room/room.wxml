@@ -1,0 +1,274 @@
+<!--pages/room/room.wxml-->
+
+<!-- 狼人杀的座位（左右两列共用同一段模板） -->
+<template name="wwSeat">
+  <view
+    class="ww-seat {{slot.member ? '' : 'is-empty'}} {{slot.member && slot.member.isSelf ? 'is-self' : ''}} {{slot.speaking ? 'is-speaking' : ''}}"
+    bindtap="onWwSeatTap"
+    data-index="{{slot.seatIndex}}"
+    hover-class="ww-seat-hover"
+  >
+    <view class="ww-avatar">
+      <image
+        wx:if="{{slot.member && slot.member.avatar}}"
+        class="ww-avatar-img"
+        src="{{slot.member.avatar}}"
+        mode="aspectFill"
+      ></image>
+      <view wx:elif="{{slot.member}}" class="ww-avatar-text">{{slot.member.initial}}</view>
+      <view wx:else class="ww-avatar-empty">+</view>
+    </view>
+
+    <view class="ww-name">{{slot.member ? slot.member.nickname : '空位'}}</view>
+
+    <view wx:if="{{slot.mark}}" class="ww-mark mark-{{slot.mark.camp}}">{{slot.mark.name}}</view>
+    <view wx:elif="{{slot.member && slot.member.isBot}}" class="ww-mark mark-bot">人机</view>
+    <view wx:elif="{{slot.member && slot.member.isOwner}}" class="ww-mark mark-owner">房主</view>
+    <view wx:elif="{{slot.member && !slot.member.ready}}" class="ww-mark mark-none">未准备</view>
+  </view>
+</template>
+
+<view class="room-page">
+  <nav-bar title="房间"></nav-bar>
+
+  <!-- 加载中 / 加载失败 -->
+  <view wx:if="{{loading}}" class="full-center">
+    <text class="t-hint">进入房间中…</text>
+  </view>
+
+  <view wx:elif="{{failed}}" class="full-center">
+    <text class="empty-emoji">🚪</text>
+    <text class="t-hint">{{failed}}</text>
+    <view class="btn btn-ghost btn-sm mt-m" bindtap="goBack">返回</view>
+  </view>
+
+  <block wx:else>
+    <!-- 房间信息条 -->
+    <view class="room-head">
+      <view class="head-code" bindtap="copyCode">
+        <text class="head-code-label">房间号</text>
+        <text class="head-code-value">{{room.code}}</text>
+      </view>
+
+      <view
+        class="head-game {{isOwner ? 'is-owner' : ''}}"
+        bindtap="onHeadGameTap"
+        hover-class="{{isOwner ? 'head-game-hover' : ''}}"
+      >
+        <text class="head-game-emoji">{{room.game.emoji}}</text>
+        <text class="head-game-name">{{variant ? variant.name : room.game.name}}</text>
+        <text wx:if="{{isOwner}}" class="head-game-edit">切换</text>
+      </view>
+
+      <view class="head-count">
+        <text class="head-count-num">{{room.memberCount}}</text>
+        <text class="head-count-total">/{{room.maxPlayers}}</text>
+      </view>
+    </view>
+
+    <!-- ============ 狼人杀开局后：能操作的牌桌 ============ -->
+    <view wx:if="{{isWerewolf && playing}}" class="ww-live">
+      <werewolf-panel
+        class="panel-fill"
+        room="{{room}}"
+        marks="{{wwMarks}}"
+        is-owner="{{isOwner}}"
+        bind:changed="onGameChanged"
+        bind:mark="onPanelMark"
+      ></werewolf-panel>
+    </view>
+
+    <!-- ============ 狼人杀开局前：左右两列座位，中间留空 ============ -->
+    <block wx:elif="{{isWerewolf}}">
+      <view class="ww-stage">
+        <view class="ww-col">
+          <block wx:for="{{seatColumns[0].seats}}" wx:key="seatIndex" wx:for-item="slot">
+            <template is="wwSeat" data="{{slot: slot}}" />
+          </block>
+        </view>
+
+        <!-- 中间留空，只铺一层背景 —— 开局后这里会变成「进程记录」 -->
+        <view class="ww-middle">
+          <view class="ww-middle-art">
+            <text class="ww-middle-emoji">{{room.game.emoji}}</text>
+            <text class="ww-middle-title">{{variant ? variant.name : room.game.name}}</text>
+          </view>
+          <text class="ww-middle-hint">{{startHint}}</text>
+        </view>
+
+        <view class="ww-col">
+          <block wx:for="{{seatColumns[1].seats}}" wx:key="seatIndex" wx:for-item="slot">
+            <template is="wwSeat" data="{{slot: slot}}"></template>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <!-- ============ 谁是卧底开局后：游戏面板 ============ -->
+    <view wx:elif="{{playing && room.gameId === 'undercover'}}" class="uc-stage">
+      <undercover-panel
+        class="panel-fill"
+        room="{{room}}"
+        is-owner="{{isOwner}}"
+        bind:changed="onGameChanged"
+      ></undercover-panel>
+    </view>
+
+    <!-- ============ 你画我猜开局后：画板 ============ -->
+    <view wx:elif="{{playing && room.gameId === 'draw-guess'}}" class="dp-stage">
+      <draw-panel
+        class="panel-fill"
+        room="{{room}}"
+        is-owner="{{isOwner}}"
+        bind:changed="onGameChanged"
+      ></draw-panel>
+    </view>
+
+    <!-- ============ 其他：座位环 ============ -->
+    <block wx:else>
+      <view
+        wx:if="{{showUndercoverSetup}}"
+        class="uc-setup"
+        bindtap="onTapUndercoverCount"
+        hover-class="{{isOwner ? 'uc-setup-hover' : ''}}"
+      >
+        <text class="uc-setup-label">卧底人数</text>
+        <text class="uc-setup-value">{{room.undercoverCount}} 人</text>
+        <text class="uc-setup-hint">
+          最多 {{maxUndercover}} 人{{isOwner ? ' · 点这里改' : ''}}
+        </text>
+      </view>
+
+      <view class="seat-stage">
+        <view class="stage-center">
+          <view class="center-emoji">{{room.game.emoji}}</view>
+          <view class="center-title ellipsis">{{room.title}}</view>
+          <view class="center-status">{{startHint}}</view>
+
+          <view wx:if="{{voice.joined}}" class="center-voice">
+            <text>🎙️ 语音中 · {{voice.memberCount}} 人</text>
+            <text wx:if="{{voice.mock}}" class="center-voice-mock">（模拟）</text>
+          </view>
+          <view wx:elif="{{voice.connecting}}" class="center-voice">正在连接语音…</view>
+          <view wx:elif="{{voice.error}}" class="center-voice center-voice-err">{{voice.error}}</view>
+        </view>
+
+        <seat
+          wx:for="{{slots}}"
+          wx:key="seatIndex"
+          member="{{item.member}}"
+          pos="{{item.pos}}"
+          seat-index="{{item.seatIndex}}"
+          speaking="{{item.speaking}}"
+          bindtap="onSeatTap"
+        ></seat>
+      </view>
+    </block>
+
+    <!-- ============ 底部操作栏 ============ -->
+    <!-- 狼人杀：⋯ + 开麦/闭麦 + 准备/开始（开局后准备隐藏、开麦占满） -->
+    <view wx:if="{{isWerewolf}}" class="ww-bar">
+      <view class="ww-more" bindtap="onMore" hover-class="bar-hover">
+        <text class="ww-more-glyph">⋯</text>
+      </view>
+
+      <view
+        class="ww-mic {{playing ? 'is-big' : ''}} {{voice.joined ? 'is-on' : ''}}"
+        bindtap="onVoiceTap"
+        hover-class="bar-hover"
+      >
+        <text class="ww-mic-glyph">{{voice.joined ? '🎙️' : '🔈'}}</text>
+        <text class="ww-mic-text">{{voice.joined ? '闭麦' : '开麦'}}</text>
+      </view>
+
+      <view
+        wx:if="{{!playing || isOwner}}"
+        class="ww-main {{mainBtnDisabled ? 'is-disabled' : ''}}"
+        bindtap="onMainAction"
+        hover-class="{{mainBtnDisabled ? '' : 'bar-hover'}}"
+      >
+        {{mainBtnText}}
+      </view>
+    </view>
+
+    <!-- 其他游戏：原来的底部栏 -->
+    <view wx:else class="room-bar">
+      <view
+        class="bar-icon {{voice.joined ? 'is-on' : ''}}"
+        bindtap="onVoiceTap"
+        hover-class="bar-hover"
+      >
+        <text class="bar-icon-glyph">{{voice.joined ? '🎙️' : '🔈'}}</text>
+        <text class="bar-icon-label">语音</text>
+      </view>
+
+      <button class="bar-icon bar-share" open-type="share" hover-class="bar-hover">
+        <text class="bar-icon-glyph">➕</text>
+        <text class="bar-icon-label">邀请</text>
+      </button>
+
+      <view
+        class="bar-main {{mainBtnDisabled ? 'bar-main-disabled' : ''}}"
+        bindtap="onMainAction"
+        hover-class="{{mainBtnDisabled ? '' : 'bar-hover'}}"
+      >
+        {{mainBtnText}}
+      </view>
+
+      <view class="bar-icon" bindtap="onMore" hover-class="bar-hover">
+        <text class="bar-icon-glyph">⋯</text>
+        <text class="bar-icon-label">更多</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 切换游戏类型 -->
+  <view wx:if="{{gamePickerVisible}}" class="mask" bindtap="closeGamePicker"></view>
+  <view wx:if="{{gamePickerVisible}}" class="sheet">
+    <view class="sheet-title">切换游戏类型</view>
+    <view class="sheet-sub">切换后所有人的准备状态会重置</view>
+
+    <scroll-view class="picker-scroll" scroll-y>
+      <view
+        wx:for="{{games}}"
+        wx:key="id"
+        class="picker-item {{item.id === room.gameId ? 'is-active' : ''}}"
+        bindtap="onPickGame"
+        data-id="{{item.id}}"
+      >
+        <text class="picker-emoji">{{item.emoji}}</text>
+        <view class="flex-1">
+          <view class="picker-name">{{item.name}}</view>
+          <view class="picker-sub">{{item.peopleText}} · {{item.tagline}}</view>
+        </view>
+        <text wx:if="{{item.id === room.gameId}}" class="picker-check">✓</text>
+      </view>
+    </scroll-view>
+
+    <view class="btn btn-ghost mt-m" bindtap="closeGamePicker">取消</view>
+  </view>
+
+  <!-- 给某人打标签（只记在自己手机上） -->
+  <view wx:if="{{markSheetVisible}}" class="mask" bindtap="closeMarkSheet"></view>
+  <view wx:if="{{markSheetVisible}}" class="sheet">
+    <view class="sheet-title">标记「{{markTarget.nickname}}」</view>
+    <view class="sheet-sub">只是你自己记的，不会同步给别人</view>
+
+    <view class="mark-list">
+      <view
+        wx:for="{{markOptions}}"
+        wx:key="id"
+        class="mark-option mark-{{item.camp}} {{markTarget.markId === item.id ? 'is-active' : ''}}"
+        bindtap="onPickMark"
+        data-id="{{item.id}}"
+      >
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{markTarget.markId}}" class="btn btn-ghost mt-m" bindtap="onClearMark">
+      取消标记
+    </view>
+    <view class="btn btn-ghost mt-s" bindtap="closeMarkSheet">关闭</view>
+  </view>
+</view>

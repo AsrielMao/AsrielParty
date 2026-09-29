@@ -1,0 +1,246 @@
+/**pages/rule-detail/rule-detail.wxss**/
+
+/* ---------- 头部 ---------- */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 0 36rpx;
+}
+
+.hero-emoji {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 68rpx;
+}
+
+.hero-name {
+  margin-top: 22rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
+.hero-tagline {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--text-2);
+}
+
+.hero-meta {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 12rpx;
+}
+
+.intro-card {
+  margin-bottom: 40rpx;
+}
+
+.intro-text {
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: var(--text-2);
+}
+
+/* ---------- 章节 ---------- */
+.section {
+  margin-bottom: 42rpx;
+}
+
+.section-title {
+  position: relative;
+  font-size: 32rpx;
+  font-weight: 700;
+  padding-left: 22rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8rpx;
+  bottom: 8rpx;
+  width: 7rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, var(--primary), var(--primary-2));
+}
+
+/* ---------- 版型 ---------- */
+.variant-card {
+  padding: 26rpx;
+  margin-bottom: 20rpx;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1rpx solid var(--border);
+}
+
+.variant-head {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.variant-name {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.variant-intro {
+  margin-top: 12rpx;
+  font-size: 25rpx;
+  line-height: 1.75;
+  color: var(--text-2);
+}
+
+.variant-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+
+.variant-role {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1rpx solid var(--border);
+  color: var(--text-2);
+}
+
+.variant-role.role-wolf {
+  background: rgba(255, 95, 109, 0.14);
+  border-color: rgba(255, 95, 109, 0.3);
+  color: #ff9aa2;
+}
+
+.variant-role.role-good {
+  background: rgba(53, 214, 164, 0.12);
+  border-color: rgba(53, 214, 164, 0.26);
+  color: #7fe3c4;
+}
+
+.variant-night {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 18rpx;
+  padding: 16rpx 20rpx;
+  border-radius: var(--radius-sm);
+  background: rgba(124, 92, 255, 0.1);
+  border: 1rpx solid rgba(124, 92, 255, 0.24);
+}
+
+.variant-night-label {
+  flex: none;
+  font-size: 22rpx;
+  color: var(--primary-2);
+  padding-top: 2rpx;
+}
+
+.variant-night-value {
+  flex: 1;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.variant-block {
+  margin-top: 20rpx;
+}
+
+.variant-block-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 10rpx;
+}
+
+/* ---------- 角色 ---------- */
+.role-item {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1rpx solid var(--border);
+}
+
+.role-emoji {
+  font-size: 40rpx;
+  line-height: 1.2;
+  flex: none;
+}
+
+.role-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.role-name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.role-desc {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+/* ---------- 规则条目 ---------- */
+.rule-list {
+  padding-left: 6rpx;
+}
+
+.rule-line {
+  display: flex;
+  gap: 14rpx;
+  margin-bottom: 14rpx;
+}
+
+.rule-dot {
+  color: var(--primary-2);
+  font-size: 26rpx;
+  line-height: 1.75;
+  flex: none;
+}
+
+.rule-text {
+  flex: 1;
+  font-size: 26rpx;
+  line-height: 1.75;
+  color: var(--text-2);
+}
+
+/* ---------- 小贴士 ---------- */
+.tip-item {
+  display: flex;
+  gap: 14rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 14rpx;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 200, 97, 0.08);
+  border: 1rpx solid rgba(255, 200, 97, 0.18);
+}
+
+.tip-mark {
+  font-size: 24rpx;
+  flex: none;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: #e8dcbd;
+}
